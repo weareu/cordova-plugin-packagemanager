@@ -20,7 +20,7 @@ import java.io.ByteArrayOutputStream;
 
 import org.apache.cordova.PluginResult;
 
-import java.util.Base64;
+import android.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("uid", packageInfo.activityInfo.applicationInfo.uid);
                     obj.put("dataDir", packageInfo.activityInfo.applicationInfo.dataDir);
                     obj.put("packageName", packageInfo.activityInfo.applicationInfo.packageName);
-                    String title = packageInfo.activityInfo.applicationInfo.loadLabel(pm);
+                    String title = packageInfo.activityInfo.applicationInfo.loadLabel(pm).toString();
                     obj.put("title", title);
                     obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.activityInfo.applicationInfo.packageName, pm));
                     list.add(obj);
@@ -70,7 +70,7 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("uid", packageInfo.uid);
                     obj.put("dataDir", packageInfo.dataDir);
                     obj.put("packageName", packageInfo.packageName);
-                    String title = packageInfo.loadLabel(pm);
+                    String title = packageInfo.loadLabel(pm).toString();
                     obj.put("title", title);
                     obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.packageName, pm));
                     list.add(obj);
