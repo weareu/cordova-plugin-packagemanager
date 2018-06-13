@@ -29,7 +29,13 @@ public class packagemanager extends CordovaPlugin {
 
         context = IS_AT_LEAST_LOLLIPOP ? cordova.getActivity().getWindow().getContext() : cordova.getActivity().getApplicationContext();
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<JSONObject> list = new ArrayList<JSONObject>();
+
+        String filter = args.getString("filter");
+        String[] filterArr = new String[0];
+        if(filter != null && filter != "") {
+            filterArr = filter.split("\\|"); 
+        }
 
         if (action.equals("all")) {
             final PackageManager pm = cordova.getActivity().getPackageManager();
@@ -37,12 +43,26 @@ public class packagemanager extends CordovaPlugin {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> apps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
             for (ResolveInfo packageInfo : apps) {
-                list.add(packageInfo.activityInfo.applicationInfo.uid + ";" + packageInfo.activityInfo.applicationInfo.dataDir + ";" + packageInfo.activityInfo.applicationInfo.packageName);
+                if(filterArr.length == 0 || containsCaseInsensitive(packageInfo.activityInfo.applicationInfo.packageName, filterArr)) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("uid", packageInfo.activityInfo.applicationInfo.uid);
+                    obj.put("dataDir", packageInfo.activityInfo.applicationInfo.dataDir);
+                    obj.put("packageName", packageInfo.activityInfo.applicationInfo.packageName);
+                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.activityInfo.applicationInfo.packageName));
+                    list.add(obj);
+                }
             }
         } else if(action.equals("none")) {
             List<ApplicationInfo> listInstalledApps = getInstalledApps(context);
             for (ApplicationInfo packageInfo : listInstalledApps) {
-                list.add(packageInfo.uid + ";" + packageInfo.dataDir + ";" + packageInfo.packageName);
+                if(filterArr.length == 0 || containsCaseInsensitive(packageInfo.packageName, filterArr)) {
+                    JSONObject obj = new JSONObject();
+                    obj.put("uid", packageInfo.uid);
+                    obj.put("dataDir", packageInfo.dataDir);
+                    obj.put("packageName", packageInfo.packageName);
+                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.packageName));
+                    list.add(obj);
+                }
             }
         }
 
@@ -56,6 +76,45 @@ public class packagemanager extends CordovaPlugin {
             callbackContext.error("PackageManager " + action + " is not a supported function.");
             return false;
         }
+    }
+
+    public boolean containsCaseInsensitive(String s, List<String> l) {
+        for (String string : l){
+            if (string.equalsIgnoreCase(s)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean containsCaseInsensitive(String s, String[] l) {
+        return containsCaseInsensitive(s, Arrays.asList(l));
+    }
+
+    private String getBitmapOfAnAppAsBase64(String packageName) {
+        if(packageName.isEmpty() ) return new String("");
+
+        String base64Encoded = "";
+        Bitmap bitmap;
+
+        try {
+            Drawable appIcon = this.reactContext.getPackageManager().getApplicationIcon(packageName);
+            if(appIcon instanceof BitmapDrawable) {
+                bitmap= ((BitmapDrawable)appIcon).getBitmap();
+            } else {
+                bitmap = Bitmap.createBitmap(appIcon.getIntrinsicWidth(), appIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            }
+
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream);
+            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            base64Encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
+
+        } catch(Exception e) {
+            Log.d(TAG,"An error was encounted while getting the package information. The error follows : " + e.toString());
+        }
+
+        return  base64Encoded;
     }
 
     public static List<ApplicationInfo> getInstalledApps(Context ctx) {

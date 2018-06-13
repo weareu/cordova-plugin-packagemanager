@@ -26,10 +26,10 @@
 var exec = require('cordova/exec');
 
 module.exports = {
-  show: function (installedApps, successCallback, errorCallback) {
+  show: function (installedApps, filter, successCallback, errorCallback) {
     var services = "packagemanager";
     var action = "none";
     if (installedApps) action = "all";
-    exec(successCallback, errorCallback, services, action, [{}]);
+    exec(successCallback, errorCallback, services, action, [filter]);
   }
 }
