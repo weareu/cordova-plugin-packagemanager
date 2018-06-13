@@ -14,8 +14,8 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 
 import android.graphics.Bitmap;
-import android.graphics.Drawable;
-import android.graphics.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.BitmapDrawable;
 import java.io.ByteArrayOutputStream;
 
 import org.apache.cordova.PluginResult;
@@ -44,8 +44,9 @@ public class packagemanager extends CordovaPlugin {
             filterArr = filter.split("\\|"); 
         }
 
+        final PackageManager pm = cordova.getActivity().getPackageManager();
+        
         if (action.equals("all")) {
-            final PackageManager pm = cordova.getActivity().getPackageManager();
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> apps = pm.queryIntentActivities(intent, PackageManager.GET_META_DATA);
@@ -105,7 +106,7 @@ public class packagemanager extends CordovaPlugin {
     private String getBitmapOfAnAppAsBase64(String packageName, PackageManager pm) {
         if(packageName.isEmpty() ) return new String("");
 
-        String base64Encoded = "";
+        String base64Encoded = null;
         Bitmap bitmap;
 
         try {
@@ -122,7 +123,6 @@ public class packagemanager extends CordovaPlugin {
             base64Encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
         } catch(Exception e) {
-            Log.d(TAG,"An error was encounted while getting the package information. The error follows : " + e.toString());
         }
 
         return  base64Encoded;
