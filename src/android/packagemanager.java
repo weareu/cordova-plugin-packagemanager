@@ -15,7 +15,7 @@ import android.os.Build;
 
 import android.graphics.Bitmap;
 import android.graphics.Drawable;
-import android.graphics.Drawable;
+import android.graphics.BitmapDrawable;
 import java.io.ByteArrayOutputStream;
 
 import org.apache.cordova.PluginResult;
@@ -23,6 +23,7 @@ import org.apache.cordova.PluginResult;
 import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 
 public class packagemanager extends CordovaPlugin {
 
@@ -56,7 +57,7 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("packageName", packageInfo.activityInfo.applicationInfo.packageName);
                     String title = packageInfo.activityInfo.applicationInfo.loadLabel(pm);
                     obj.put("title", title);
-                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.activityInfo.applicationInfo.packageName));
+                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.activityInfo.applicationInfo.packageName, pm));
                     list.add(obj);
                 }
             }
@@ -70,7 +71,7 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("packageName", packageInfo.packageName);
                     String title = packageInfo.loadLabel(pm);
                     obj.put("title", title);
-                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.packageName));
+                    obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.packageName, pm));
                     list.add(obj);
                 }
             }
@@ -101,16 +102,16 @@ public class packagemanager extends CordovaPlugin {
         return containsCaseInsensitive(s, Arrays.asList(l));
     }
 
-    private String getBitmapOfAnAppAsBase64(String packageName) {
+    private String getBitmapOfAnAppAsBase64(String packageName, PackageManager pm) {
         if(packageName.isEmpty() ) return new String("");
 
         String base64Encoded = "";
         Bitmap bitmap;
 
         try {
-            Drawable appIcon = this.reactContext.getPackageManager().getApplicationIcon(packageName);
+            Drawable appIcon = pm.getApplicationIcon(packageName);
             if(appIcon instanceof BitmapDrawable) {
-                bitmap= ((BitmapDrawable)appIcon).getBitmap();
+                bitmap = ((BitmapDrawable)appIcon).getBitmap();
             } else {
                 bitmap = Bitmap.createBitmap(appIcon.getIntrinsicWidth(), appIcon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
             }
