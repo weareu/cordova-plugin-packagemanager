@@ -48,6 +48,8 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("uid", packageInfo.activityInfo.applicationInfo.uid);
                     obj.put("dataDir", packageInfo.activityInfo.applicationInfo.dataDir);
                     obj.put("packageName", packageInfo.activityInfo.applicationInfo.packageName);
+                    String title = packageInfo.activityInfo.applicationInfo.loadLabel(pm);
+                    obj.put("title", title);
                     obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.activityInfo.applicationInfo.packageName));
                     list.add(obj);
                 }
@@ -60,6 +62,8 @@ public class packagemanager extends CordovaPlugin {
                     obj.put("uid", packageInfo.uid);
                     obj.put("dataDir", packageInfo.dataDir);
                     obj.put("packageName", packageInfo.packageName);
+                    String title = packageInfo.loadLabel(pm);
+                    obj.put("title", title);
                     obj.put("icon", getBitmapOfAnAppAsBase64(packageInfo.packageName));
                     list.add(obj);
                 }
