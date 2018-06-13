@@ -13,8 +13,14 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.Build;
 
+import android.graphics.Bitmap;
+import android.graphics.Drawable;
+import android.graphics.Drawable;
+import java.io.ByteArrayOutputStream;
+
 import org.apache.cordova.PluginResult;
 
+import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +37,7 @@ public class packagemanager extends CordovaPlugin {
 
         ArrayList<JSONObject> list = new ArrayList<JSONObject>();
 
-        String filter = args.getString("filter");
+        String filter = args.getString(0);
         String[] filterArr = new String[0];
         if(filter != null && filter != "") {
             filterArr = filter.split("\\|"); 
@@ -111,7 +117,7 @@ public class packagemanager extends CordovaPlugin {
 
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             bitmap.compress(Bitmap.CompressFormat.PNG, 90, byteArrayOutputStream);
-            byte[] byteArray = byteArrayOutputStream .toByteArray();
+            byte[] byteArray = byteArrayOutputStream.toByteArray();
             base64Encoded = Base64.encodeToString(byteArray, Base64.DEFAULT);
 
         } catch(Exception e) {
