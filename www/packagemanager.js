@@ -29,7 +29,8 @@ var packagemanager = {
     var services = 'packagemanager';
     var action = 'none';
     if (installedApps) action = 'all';
-    exec(successCallback, errorCallback, services, action, [filter]);
+    var args = [filter];
+    exec(successCallback, errorCallback, services, action, args);
   }
 };
 

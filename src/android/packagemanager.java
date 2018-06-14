@@ -38,9 +38,9 @@ public class packagemanager extends CordovaPlugin {
 
         ArrayList<JSONObject> list = new ArrayList<JSONObject>();
 
-        String filter = args.getString(0);
+        String filter = args.getString(0, null);
         String[] filterArr = new String[0];
-        if(filter != null && filter != "") {
+        if(filter != null && filter != "" && filter != "null") {
             filterArr = filter.split("\\|"); 
         }
 
