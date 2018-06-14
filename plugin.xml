@@ -26,7 +26,7 @@
     <repo>https://github.com/fbsanches/cordova-plugin-packagemanager</repo>
     <issue>https://github.com/fbsanches/cordova-plugin-packagemanager/issues</issue>
     <js-module src="www/packagemanager.js" name="packagemanager">
-        <clobbers target="window.plugins.packagemanager" />
+        <clobbers target="window.packagemanager" />
     </js-module>
     <config-file target="AndroidManifest.xml" parent="/*">
         <uses-permission android:name="android.permission.GET_TASKS"/>
